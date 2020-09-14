@@ -1,0 +1,64 @@
+{{!-- <form action="/add" method="POST"> --}}
+<form>
+  <div>
+    <p><span>The Richard Simmons Slimmons 5000</span></p>
+  </div>
+  <div>
+    <label for="name">Name</label>
+    <input type="text" name="name" id="name">
+  </div>
+  <div>
+    <label for="reps">Reps</label>
+    <input type="number" name="reps" id="reps" min="0">
+  </div>
+  <div>
+    <label for="weight">Weight</label>
+    <input type="number" name="weight" id="weight" min="0">
+  </div>
+  <div>
+    <label for="date">Date</label>
+    <input type="date" name="date" id="date" value="2020-01-01">
+  </div>
+  <div>
+    <label for="english">lb</label>
+    <input type="radio" id='english' name='lbs' value=1>
+    <label for="metric">kg</label>
+    <input type="radio" id='metric' name='lbs' value=0>
+  </div>
+  <div>
+    {{!-- <button type="button" onclick="insert()">Add</button> --}}
+    <button onclick="insertEntry()" type="button" >Add</button>
+  </div>
+</form>
+
+<div></div>
+<div></div>
+{{#if results}}
+<div>
+  <table>
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Reps</th>
+        <th>Weight</th>
+        <th>Date</th>
+        <th>Units</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each results}}
+      <tr id="{{id}}">
+        <td>{{name}}</td>
+        <td>{{reps}}</td>
+        <td>{{weight}}</td>
+        <td>{{date}}</td>
+        <td>{{lbs}}</td>
+        <td><button onclick="updateEntry()" type="button">UPDATE</button></td>
+        {{!-- <td><button class="red" onclick="deleteEntry({{id}})" type="button">X</button></td> --}}
+        <td><button class="red" onclick="deleteEntry({{id}})" type="button">X</button></td>
+      </tr>
+      {{/each}}
+    </tbody>
+  </table>
+</div>
+{{/if}}
