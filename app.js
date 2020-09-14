@@ -14,8 +14,7 @@ app.set('mysql', mysql);
 app.set('port', process.argv[2]);
 
 
-app.use('/static', express.static('public'));
-app.use('/', express.static('public'));
+app.use(express.static(__dirname + '/public'));
 
 
 // DATA FLOW 
@@ -59,7 +58,7 @@ app.get('/', (req, res, next) =>{
         entry.lbs = 'kgs';
       }
     });
-    console.log(context);
+    // console.log(context);
     // DON'T SET TYPE OR HTML WILL NOT RENDER
     // res.type('application/json');
     // res.type('html');
@@ -72,20 +71,21 @@ app.get('/', (req, res, next) =>{
 //   res.send(`This is the cow.  MOOOOOO!!!!!!`);
 // });
 
-app.get('/add', (req, res, next) => {
-  console.log(req.body);
-  inserts = [req.body.name, Number(req.body.reps), Number(req.body.weight), req.body.date, req.body.lbs];
-  console.log(inserts);
-  mysql.pool.query(mysql.INSERT, inserts, (err, rows, next)=>{
-    if(err) {
-      console.log(err);
-    }
-  });
-  res.send(JSON.stringify(context));
-  // res.redirect('/');
-});
+// app.get('/add', (req, res, next) => {
+//   console.log(req.body);
+//   inserts = [req.body.name, Number(req.body.reps), Number(req.body.weight), req.body.date, req.body.lbs];
+//   console.log(inserts);
+//   mysql.pool.query(mysql.INSERT, inserts, (err, rows, next)=>{
+//     if(err) {
+//       console.log(err);
+//     }
+//   });
+//   res.send(JSON.stringify(context));
+//   // res.redirect('/');
+// });
 
 app.post('/add', (req, res, next)=>{
+  let context = {};
   console.log(req.body);
   inserts = [req.body.name, Number(req.body.reps), Number(req.body.weight), req.body.date, req.body.lbs];
   console.log(inserts);
@@ -93,21 +93,46 @@ app.post('/add', (req, res, next)=>{
     if(err) {
       console.log(err);
     }
-    console.log(rows);
   });
- 
   res.redirect('/');
 });
 
-app.get('/delete/:id', (req,res,next)=>{
-  console.log(`You want to delete ${req.params.id}`);
+// update entry
+app.put('/:id', (req, res) => {
+  let context = {};
+  mysql.pool.query(mysql.SELONE, [req.params.id], (err, row, fields) => {
+    if(err) {
+      next(err);
+      return;
+    }
+    if(row.length === 1) {
+      let curVals = row[0];
+      mysql.pool.query(
+        mysql.UPDATE, 
+        [req.query.name || curVals.name, req.query.reps || curVals.reps, req.query.weight || curVals.weight, req.query.lbs || curVals.lbs ],
+        (err, result) => {
+          if(err) {
+            next(err);
+            return;
+          }
+          context.results = `Updated ${result.changedRows} rows`;
+          res.render('home', context);
+        });
+    }
+  });
+});
+
+
+// delete entry
+app.post('/delete/:id', (req,res,next) => {
+  let context = {};
   mysql.pool.query(mysql.DELETE, [req.params.id],(err, rows, fields)=>{
     if(err) {
       console.log(err);
     }
-    else {
-      console.log(rows);
-    }
+    // else {
+    //   console.log(rows);
+    // }
   });
   res.redirect('/');
 });

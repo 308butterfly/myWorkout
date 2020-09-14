@@ -1,33 +1,33 @@
-{{!-- <form action="/add" method="POST"> --}}
-<form>
+<form  id="the_form" action="/add" method="POST">
+  {{!-- <form> --}}
   <div>
     <p><span>The Richard Simmons Slimmons 5000</span></p>
   </div>
   <div>
     <label for="name">Name</label>
-    <input type="text" name="name" id="name">
+    <input id='name' type="text" name="name" id="name">
   </div>
   <div>
     <label for="reps">Reps</label>
-    <input type="number" name="reps" id="reps" min="0">
+    <input id='reps' type="number" name="reps" id="reps" min="0">
   </div>
   <div>
     <label for="weight">Weight</label>
-    <input type="number" name="weight" id="weight" min="0">
+    <input id='weight' type="number" name="weight" id="weight" min="0">
   </div>
   <div>
     <label for="date">Date</label>
-    <input type="date" name="date" id="date" value="2020-01-01">
+    <input id='date' type="date" name="date" id="date" value="2020-01-01">
   </div>
   <div>
     <label for="english">lb</label>
-    <input type="radio" id='english' name='lbs' value=1>
+    <input id='english' type="radio" id='english' name='lbs' value=1>
     <label for="metric">kg</label>
-    <input type="radio" id='metric' name='lbs' value=0>
+    <input id='metric' type="radio" id='metric' name='lbs' value=0>
   </div>
   <div>
-    {{!-- <button type="button" onclick="insert()">Add</button> --}}
-    <button onclick="insertEntry()" type="button" >Add</button>
+    {{!-- <button onclick="insertEntry()" type="button" >Add</button> --}}
+    <button id='add' type="submit">Add</button>
   </div>
 </form>
 
@@ -53,9 +53,14 @@
         <td>{{weight}}</td>
         <td>{{date}}</td>
         <td>{{lbs}}</td>
-        <td><button onclick="updateEntry()" type="button">UPDATE</button></td>
+        <td><button onclick="updateEntry({{id}})" type="button">UPDATE</button></td>
         {{!-- <td><button class="red" onclick="deleteEntry({{id}})" type="button">X</button></td> --}}
-        <td><button class="red" onclick="deleteEntry({{id}})" type="button">X</button></td>
+        {{!-- <td><button class="red" onclick="deleteEntry({{id}})" type="button">X</button></td> --}}
+        <td>
+          <form class="delete_button" action="/delete/{{id}}?_method=DELETE" method="POST">
+            <button class="red" type="submit">X</button>
+          </form>
+        </td>
       </tr>
       {{/each}}
     </tbody>

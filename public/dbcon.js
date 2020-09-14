@@ -7,12 +7,14 @@ const pool = mysql.createPool({
   database : 'workouts'
 });
 
+const dbname = 'workouts';
 
 const selectQuery = "SELECT * FROM workouts;";
+const selectOneQuery = "SELECT * FROM workouts WHERE id=?"
 const insertQuery = "INSERT INTO workouts (`name`, `reps`, `weight`,`date`,`lbs`) VALUES (?,?,?,?,?);";
 const deleteQuery = "DELETE FROM workouts WHERE id = (?);";
 const dropQuery   = "DROP TABLE IF EXISTS workouts;";
-const updateQuery = "";
+const updateQuery = "UPDATE workouts SET name=?, reps=?, weight=?, date=?, lbs=? WHERE id=?";
 const createQuery = "CREATE TABLE workouts("+
 "id INT PRIMARY KEY AUTO_INCREMENT,"+
 "name VARCHAR(255) NOT NULL,"+
@@ -25,6 +27,7 @@ const createQuery = "CREATE TABLE workouts("+
 module.exports.pool = pool;
 
 module.exports.SELECT = selectQuery;
+module.exports.SELONE = selectOneQuery;
 module.exports.INSERT = insertQuery;
 module.exports.DELETE = deleteQuery;
 module.exports.DROP = dropQuery;

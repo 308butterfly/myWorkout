@@ -12,3 +12,12 @@ form {
 .red {
   background-color: red;
 }
+
+.delete_button {
+  display: inline;
+}
+
+td {
+  text-align: center; 
+  vertical-align: middle;
+}

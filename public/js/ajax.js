@@ -14,6 +14,22 @@ function test() {
   alert('bingo bango!!');
 }
 
+function formatDate(date) {
+  let d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();
+
+  if (month.length < 2) month = '0' + month;
+  if (day.length < 2) day = '0' + day;
+
+  return [year, month, day].join('-');
+}
+
+function formatUnits(units) {
+  return ;
+}
+
 function loadEntries() {
   // let response = {};
   let xhttp = new XMLHttpRequest();
@@ -33,9 +49,14 @@ function loadEntries() {
   // alert('loadEntries fxn!!!');
 }
 
-// function updateEntry() {
-//   alert('TOTALLY UPDATED!!!');
-// }
+function updateEntry(id) {
+  let row = document.getElementById(id);
+  document.getElementById('name').value = row.cells[0].innerText;
+  document.getElementById('reps').value = row.cells[1].innerText;
+  document.getElementById('weight').value = row.cells[2].innerText;
+  console.log(row.cells[3].innerText);
+  document.getElementById('date').value = yyyymmddDate(row.cells[3].innerText);
+}
 
 function insertEntry() {
   // alert('insert here!!!!');
