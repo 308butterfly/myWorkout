@@ -8,6 +8,7 @@ const bp = require("body-parser");
 const mysql = require("./public/dbcon.js");
 const queries = require("./public/js/queries.js");
 const methodOverride = require("method-override");
+const dateUtil = require("./public/js/helper");
 
 const app = express();
 
@@ -21,6 +22,7 @@ app.set("queries", queries);
 app.set("port", process.argv[2] || 5000);
 
 app.use(express.static(__dirname + "/public"));
+app.use(express.static("public/assets"));
 
 // DATA FLOW
 
@@ -46,11 +48,6 @@ app.use(express.static(__dirname + "/public"));
 
 app.use(methodOverride("_method"));
 
-function handleError(err) {
-  console.log(err);
-  return;
-}
-
 app.get("/", (req, res, next) => {
   let context = {};
   mysql.pool.query(queries.SELECT, (err, results, fields) => {
@@ -62,45 +59,11 @@ app.get("/", (req, res, next) => {
     console.log("In get all entries route");
     context.results = results;
     context.results.forEach((entry) => {
-      if (entry.lbs === null || entry.lbs === 1) {
-        entry.lbs = "lbs";
-      } else {
-        entry.lbs = "kgs";
-      }
+      let date = new Date(entry.date.toString());
+      entry.date = dateUtil.mmddyyyy(date);
     });
-    console.log(context);
-    // DON'T SET TYPE OR HTML WILL NOT RENDER
-    // res.type('application/json');
     res.type("html");
-    // res.send(results);
     res.render("home", context);
-  });
-});
-
-// * edit workout from database
-app.get("/workout/:id/edit", (req, res, next) => {
-  let context = {};
-  mysql.pool.query(queries.SELONE, [req.params.id], (err, results, fields) => {
-    if (err) {
-      console.log(`Failed to query entries: \n${err}`);
-      next(err);
-      return;
-    }
-    console.log("In get single entry route");
-    context.results = results;
-    context.results.forEach((entry) => {
-      if (entry.lbs === null || entry.lbs === 1) {
-        entry.lbs = "lbs";
-      } else {
-        entry.lbs = "kgs";
-      }
-    });
-    console.log(context);
-    // DON'T SET TYPE OR HTML WILL NOT RENDER
-    // res.type('application/json');
-    // res.type('html');
-    res.send(results);
-    //res.render('home', context);
   });
 });
 
@@ -126,7 +89,7 @@ app.post("/workout", (req, res, next) => {
       name: inserts[0],
       reps: inserts[1],
       weight: inserts[2],
-      date: inserts[3],
+      date: dateUtil.fwdSlash_mmddyyyy(inserts[3]),
       lbs: inserts[4],
     };
     res.type("plain/html");
@@ -143,13 +106,32 @@ app.put("/workout/:id", (req, res) => {
 
   mysql.pool.query(
     queries.UPDATE,
-    [req.body.name, req.body.reps, req.body.weight, 1],
+    [
+      req.body.name,
+      req.body.reps,
+      req.body.weight,
+      req.body.date,
+      req.body.lbs,
+      req.body.id,
+    ],
     (err, result) => {
       if (err) {
-        // next(err);
-        return;
+        res.send(err);
       }
-      res.send("HIIIIII");
+      context = {
+        id: req.body.id,
+        name: req.body.name,
+        reps: req.body.reps,
+        weight: req.body.weight,
+        date: dateUtil.fwdSlash_mmddyyyy(req.body.date),
+        lbs: req.body.lbs,
+      };
+
+      res.type("plain/html");
+      res.render("partials/tblRow", {
+        layout: false,
+        ...context,
+      });
     }
   );
 });
@@ -175,9 +157,7 @@ app.get("/reset-table", function (req, res, next) {
     //replace your connection pool with the your variable containing the connection pool
     mysql.pool.query(queries.CREATE, function (err) {
       context.results = "Table reset";
-      //res.render('home');
       req.send(context);
-      // res.redirect('/');
     });
   });
   console.log("Table Reset");

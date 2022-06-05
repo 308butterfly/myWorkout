@@ -1,26 +1,23 @@
-/* h1 {
+form {
   color: blueviolet;
-  background-color: coral;
-
-} */
-
+}
 span {
   color: blueviolet;
   background-color: coral;
 }
-form {
-  color: blueviolet;
-}
-
-.red {
-  background-color: red;
+td {
+  text-align: center;
+  vertical-align: middle;
 }
 
 .delete_button {
   display: inline;
 }
 
-td {
-  text-align: center; 
-  vertical-align: middle;
+.hide {
+  display: none;
+}
+
+.red {
+  background-color: red;
 }
