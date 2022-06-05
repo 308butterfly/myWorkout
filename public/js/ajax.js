@@ -9,108 +9,99 @@
 // Instead Ajax calls should be used to GET or POST to the server 
 // and it should use the data the server provides to update the page.
 
+function deleteEntry(id) {
+    let xhttp = new XMLHttpRequest();
 
-function test() {
-  alert('bingo bango!!');
-}
-
-function formatDate(date) {
-  let d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();
-
-  if (month.length < 2) month = '0' + month;
-  if (day.length < 2) day = '0' + day;
-
-  return [year, month, day].join('-');
-}
-
-function formatUnits(units) {
-  return ;
+    xhttp.open('DELETE', `/workout/${id}`, true);
+    xhttp.setRequestHeader('Content-Type', 'application/json');
+    xhttp.onreadystatechange = function() {
+        if (this.status == 200 && this.readyState == 4) {
+            console.log(this.responseText);
+            document.getElementById(id).remove();
+        }
+    } // end onReadyState
+    xhttp.send();
 }
 
 function loadEntries() {
-  // let response = {};
-  let xhttp = new XMLHttpRequest();
-  // true want it to be asynchronous
-  xhttp.open('GET', '/', true);
-  xhttp.setRequestHeader('Content-Type', 'application/json');
-  // what is this used for ????
-  xhttp.addEventListener('load', () => {
-    if (xhttp.status >= 200 && xhttp.status < 400) {
-      xhttp.send(JSON.parse(xhttp.responseText));
-      // console.log(results);
-      // alert('loaded entries ready state change')
-    }
-  });
-  // xhttp.send(response);
-  event.preventDefault();
-  // alert('loadEntries fxn!!!');
+    // let response = {};
+    let xhttp = new XMLHttpRequest();
+    // true want it to be asynchronous
+    xhttp.open('GET', '/', true);
+    xhttp.setRequestHeader('Content-Type', 'application/json');
+    // what is this used for ????
+    xhttp.addEventListener('load', () => {
+        if ((this.status >= 200 && this.status < 400) && (this.readyState === 4)){
+        xhttp.send(JSON.parse(xhttp.responseText));
+        // console.log(results);
+        // alert('loaded entries ready state change')
+        }
+    });
+    // xhttp.send(response);
+    // event.preventDefault();
+    // alert('loadEntries fxn!!!');
+     // * create row
+     let tr = document.createElement('tr');
+
 }
+  
+// *  Takes values from a row in the table and places them in the form
+// * Form will make 'POST' request to update entry in database (this maybe wrong)
+// * Page will have to be refreshed to see changes
 
 function updateEntry(id) {
+
+  // ? Filling form with values of table
   let row = document.getElementById(id);
   document.getElementById('name').value = row.cells[0].innerText;
   document.getElementById('reps').value = row.cells[1].innerText;
   document.getElementById('weight').value = row.cells[2].innerText;
-  console.log(row.cells[3].innerText);
   document.getElementById('date').value = yyyymmddDate(row.cells[3].innerText);
+
+  // ? change attributes of form
+  let form = document.getElementById('the_form');
+  form.method = 'POST';
+  form.action = `/${id}?_method=PUT`;
+
+  let formBtn = document.getElementById('add');
+  formBtn.textContent = 'UPDATE';
+  //loadEntries();
+
+//   document.getElementById("myForm").reset();
 }
 
-function insertEntry() {
-  // alert('insert here!!!!');
-  let result = {};
+function insertWorkout() {
   let payload = {};
   let xhttp = new XMLHttpRequest();
 
-  xhttp.addEventListener('load', () => {
-    if (xhttp.status >= 200 && xhttp.status < 400) {
-      // xhttp.send(JSON.parse(xhttp.responseText));
-      // console.log(results);
-
-      loadEntries();
-
-      alert('entry added');
-    }
-  });
-
   payload.name = document.getElementById('name').value;
+  if(payload.name === "")
+    return;
   payload.reps = document.getElementById('reps').value;
   payload.weight = document.getElementById('weight').value;
   payload.date = document.getElementById('date').value;
   // fix this later always returns 1
-  payload.lbs = document.getElementById('english').value;
+//   payload.lbs = document.getElementById('english').value;
+  payload.lbs = 1;
+
+  xhttp.onreadystatechange = function() {
+      if(this.status == 200 && this.readyState == 4) {
+          let result = this.responseText;
+          console.log(result);
+          document.getElementById("tblBdy").insertAdjacentHTML("beforeend",result);
+          document.getElementById("form").reset();
+
+      }
+  }
 
   console.log(payload);
 
-  xhttp.open('POST', '/add', true);
+  xhttp.open('POST', '/workout', true);
   xhttp.setRequestHeader('Content-Type', 'application/json');
   xhttp.send(JSON.stringify(payload));
+
   event.preventDefault();
 }
 
-// function deleteEntry(id) {
-//   alert('delete...... DELETE!!!!!  ' + id);
-//   let payload = {'id': id };
-//   let xhttp = new XMLHttpRequest();
-//   xhttp.open('POST',`/delete/${id}`, true);
-//   xhttp.setRequestHeader('Content-Type','application/json');
-//   xhttp.addEventListener('load', () => {
-//     if(xhttp.status >= 200 && xhttp.status < 400) {
-//       console.log('START OF RESPONSE TEXT');
-//       console.log(xhttp.responseText);
-//       console.log("END OF RESPONSE TEXT");
 
-//     } else {
-//       console.log(`Network request error: ${xhttp.statusText}`);
-//     }
-//   });
-//   xhttp.send(JSON.stringify(payload));
-//   // xhttp.send();
-//   event.preventDefault();
-// }
 
-// function todaysDate() {
-//   document.getElementById('date').valueAsDate = new Date();
-// }

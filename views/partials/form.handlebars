@@ -1,0 +1,27 @@
+<form id="form">
+    <div>
+      <label for="name">Name</label>
+      <input id='name' type="text" name="name" id="name">
+    </div>
+    <div>
+      <label for="reps">Reps</label>
+      <input id='reps' type="number" name="reps" id="reps" value="1" min="0">
+    </div>
+    <div>
+      <label for="weight">Weight</label>
+      <input id='weight' type="number" name="weight" id="weight" value="1" min="0">
+    </div>
+    <div>
+      <label for="date">Date</label>
+      <input id='date' type="date" name="date" id="date" value="2020-01-01">
+    </div>
+    <div>
+      <label for="english">lb</label>
+      <input type="radio" id='english' name='units' value='lbs'>
+      <label for="metric">kg</label>
+      <input type="radio" id='metric' name='units' value='kgs'>
+    </div>
+    <div>
+      <button id='add' type="button" onclick="insertWorkout()">Add</button>
+    </div>
+  </form>

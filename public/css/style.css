@@ -1,8 +1,11 @@
-h1 {
-  color: blue;
-}
+/* h1 {
+  color: blueviolet;
+  background-color: coral;
+
+} */
 
 span {
+  color: blueviolet;
   background-color: coral;
 }
 form {

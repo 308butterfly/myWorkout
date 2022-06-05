@@ -1,0 +1,20 @@
+{{#if results}}
+    <table>
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Reps</th>
+            <th>Weight</th>
+            <th>Units</th>
+            <th>Date</th>
+            <th></th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="tblBdy">
+        {{#each results}}
+            {{> tblRow}}
+        {{/each}}
+        </tbody>
+    </table>
+{{/if}}
